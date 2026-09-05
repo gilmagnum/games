@@ -1,0 +1,58 @@
+{
+  "$comment": "רישום המשחקים בדף הבית. להוספת משחק חדש — מוסיפים אובייקט כאן, ומריצים שורה מקבילה בטבלת games ב-Supabase (seed.sql). ה-slug חייב להיות זהה בשני המקומות.",
+  "games": [
+    {
+      "slug": "area-conquer",
+      "title": "סוגר שטחים",
+      "subtitle": "כבשו 75% מהלוח בלי שהכדורים יפגעו בקו",
+      "emoji": "🟪",
+      "url": "https://gilmagnum.github.io/area-conquer/",
+      "scoreLabel": "נקודות",
+      "scoreOrder": "desc",
+      "accent": "#7c9dff",
+      "accent2": "#b06bff",
+      "tags": ["ארקייד", "מובייל"]
+    },
+    {
+      "slug": "catchit-normal",
+      "title": "תפוס'תו!",
+      "subtitle": "30 שניות לתפוס כמה שיותר — ולהיזהר מהקופים",
+      "emoji": "🐒",
+      "url": "https://gilmagnum.github.io/catchit-/",
+      "scoreLabel": "נקודות",
+      "scoreOrder": "desc",
+      "accent": "#ff9f43",
+      "accent2": "#ee5a6f",
+      "tags": ["רפלקסים", "מובייל"],
+      "variants": [
+        { "slug": "catchit-easy", "label": "🟢 קל" },
+        { "slug": "catchit-normal", "label": "🟡 רגיל" },
+        { "slug": "catchit-hard", "label": "🔴 קשה" }
+      ]
+    },
+    {
+      "slug": "snake-memory",
+      "title": "שביל הנחש",
+      "subtitle": "לזכור את התבנית ולשחזר אותה באצבע",
+      "emoji": "🐍",
+      "url": "https://gilmagnum.github.io/Snake-memory/",
+      "scoreLabel": "נקודות",
+      "scoreOrder": "desc",
+      "accent": "#3ddc97",
+      "accent2": "#12a37a",
+      "tags": ["זיכרון", "מובייל"]
+    },
+    {
+      "slug": "find-the-ace",
+      "title": "אס־פרס קזינו",
+      "subtitle": "למצוא את 4 האסים בכמה שפחות קלפים",
+      "emoji": "🃏",
+      "url": "https://gilmagnum.github.io/Find-the-Ace/",
+      "scoreLabel": "קלפים",
+      "scoreOrder": "asc",
+      "accent": "#e8536a",
+      "accent2": "#a83a8c",
+      "tags": ["מזל", "קלפים"]
+    }
+  ]
+}

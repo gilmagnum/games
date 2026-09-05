@@ -1,5 +1,5 @@
 {
-  "$comment": "רישום המשחקים בדף הבית. להוספת משחק חדש — מוסיפים אובייקט כאן, ומריצים שורה מקבילה בטבלת games ב-Supabase (seed.sql). ה-slug חייב להיות זהה בשני המקומות.",
+  "$comment": "רישום המשחקים בדף הבית. להוספת משחק חדש — מוסיפים אובייקט כאן, ומריצים שורה מקבילה בטבלת games ב-Supabase (supabase/seed.sql). ה-slug חייב להיות זהה בשני המקומות.",
   "games": [
     {
       "slug": "area-conquer",
@@ -11,7 +11,10 @@
       "scoreOrder": "desc",
       "accent": "#7c9dff",
       "accent2": "#b06bff",
-      "tags": ["ארקייד", "מובייל"]
+      "tags": [
+        "ארקייד",
+        "מובייל"
+      ]
     },
     {
       "slug": "catchit-normal",
@@ -23,11 +26,38 @@
       "scoreOrder": "desc",
       "accent": "#ff9f43",
       "accent2": "#ee5a6f",
-      "tags": ["רפלקסים", "מובייל"],
+      "tags": [
+        "רפלקסים",
+        "מובייל"
+      ],
       "variants": [
-        { "slug": "catchit-easy", "label": "🟢 קל" },
-        { "slug": "catchit-normal", "label": "🟡 רגיל" },
-        { "slug": "catchit-hard", "label": "🔴 קשה" }
+        {
+          "slug": "catchit-easy",
+          "label": "🟢 קל"
+        },
+        {
+          "slug": "catchit-normal",
+          "label": "🟡 רגיל"
+        },
+        {
+          "slug": "catchit-hard",
+          "label": "🔴 קשה"
+        }
+      ]
+    },
+    {
+      "slug": "pizza-chef",
+      "title": "פיצה ארקייד",
+      "subtitle": "כמה מגשים תספיקו להרכיב לפי הסדר",
+      "emoji": "🍕",
+      "url": "https://gilmagnum.github.io/Pizza-Chef/",
+      "scoreLabel": "מגשים",
+      "scoreOrder": "desc",
+      "accent": "#ff8a3d",
+      "accent2": "#e0432b",
+      "tags": [
+        "ארקייד",
+        "מובייל"
       ]
     },
     {
@@ -40,7 +70,10 @@
       "scoreOrder": "desc",
       "accent": "#3ddc97",
       "accent2": "#12a37a",
-      "tags": ["זיכרון", "מובייל"]
+      "tags": [
+        "זיכרון",
+        "מובייל"
+      ]
     },
     {
       "slug": "find-the-ace",
@@ -52,7 +85,10 @@
       "scoreOrder": "asc",
       "accent": "#e8536a",
       "accent2": "#a83a8c",
-      "tags": ["מזל", "קלפים"]
+      "tags": [
+        "מזל",
+        "קלפים"
+      ]
     }
   ]
 }

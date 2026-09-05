@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ArcAIde · הארקייד של גיל</title>
+<meta name="description" content="אוסף משחקי דפדפן קטנים — עם טבלאות שיאים גלובליות. חינם, בלי התקנה, עובד גם בנייד.">
+<meta property="og:title" content="ArcAIde · הארקייד של גיל">
+<meta property="og:description" content="אוסף משחקי דפדפן קטנים עם טבלאות שיאים גלובליות.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%95%B9%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0d1c; --bg2:#12142a;
+  --card:rgba(255,255,255,.045); --card-h:rgba(255,255,255,.075);
+  --line:rgba(255,255,255,.09);
+  --tx:#eef1ff; --tx2:#9aa3c9; --tx3:#6f779e;
+  --a:#7c9dff; --b:#b06bff;
+  --r:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:"Rubik",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  background:var(--bg); color:var(--tx); min-height:100dvh;
+  direction:rtl; text-align:right; line-height:1.55;
+  overflow-x:hidden;
+}
+body::before{
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(1000px 620px at 88% -12%, rgba(124,157,255,.20), transparent 62%),
+    radial-gradient(820px 560px at 6% 4%, rgba(176,107,255,.16), transparent 60%),
+    radial-gradient(700px 500px at 50% 112%, rgba(255,138,76,.10), transparent 62%),
+    linear-gradient(180deg,#0b0d1c,#111327 70%,#0b0d1c);
+}
+.shell{width:min(1080px,100%);margin:0 auto;padding:clamp(28px,6vw,64px) clamp(16px,4vw,32px) 72px}
+
+/* ---------- header ---------- */
+header{margin-bottom:clamp(28px,5vw,48px)}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12.5px;font-weight:600;letter-spacing:.04em;color:var(--tx2);
+  background:var(--card);border:1px solid var(--line);
+  padding:6px 13px;border-radius:100px;margin-bottom:18px
+}
+.eyebrow i{width:6px;height:6px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.18);font-style:normal}
+h1{
+  direction:ltr;
+  font-size:clamp(38px,8vw,66px);font-weight:800;letter-spacing:-.025em;line-height:1.05;
+  background:linear-gradient(120deg,#fff 20%,#b9c6ff 55%,#d7b4ff 90%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:14px
+}
+.ai{background:linear-gradient(120deg,#8fa6ff,#d7a2ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:clamp(16px,3vw,21px);font-weight:500;color:#b9c1e6;margin:-6px 0 14px}
+.lede{font-size:clamp(15px,2.4vw,17.5px);color:var(--tx2);max-width:56ch}
+.lede b{color:var(--tx);font-weight:500}
+
+/* ---------- grid ---------- */
+.sec-title{
+  display:flex;align-items:baseline;gap:12px;margin:0 0 18px;
+  font-size:13px;font-weight:600;letter-spacing:.08em;color:var(--tx3);text-transform:uppercase
+}
+.sec-title::after{content:"";flex:1;height:1px;background:var(--line)}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+
+.card{
+  position:relative;overflow:hidden;border-radius:var(--r);
+  background:var(--card);border:1px solid var(--line);
+  padding:22px 20px 18px;
+  transition:transform .22s cubic-bezier(.2,.9,.3,1.1),background .22s,border-color .22s;
+}
+.card::before{
+  content:"";position:absolute;inset:0 0 auto;height:3px;
+  background:linear-gradient(90deg,var(--ca,var(--a)),var(--cb,var(--b)));
+  opacity:.9
+}
+.card::after{
+  content:"";position:absolute;top:-70px;left:-70px;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,var(--ca,var(--a)),transparent 68%);opacity:.16;
+  transition:opacity .25s;pointer-events:none
+}
+.card:hover{transform:translateY(-3px);background:var(--card-h);border-color:rgba(255,255,255,.16)}
+.card:hover::after{opacity:.3}
+
+.card-head{display:flex;align-items:flex-start;gap:13px;margin-bottom:14px}
+.ic{
+  flex:none;width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:26px;
+  background:linear-gradient(140deg,var(--ca,var(--a)),var(--cb,var(--b)));
+  box-shadow:0 8px 22px -8px var(--ca,var(--a))
+}
+.card h3{font-size:19px;font-weight:700;letter-spacing:-.01em;margin-bottom:3px}
+.card p{font-size:13.5px;color:var(--tx2);line-height:1.5}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.tag{font-size:11px;font-weight:500;color:var(--tx2);background:rgba(255,255,255,.06);border-radius:7px;padding:3px 8px}
+
+/* mini leaderboard inside a card */
+.mini{border-top:1px solid var(--line);margin-top:16px;padding-top:13px;min-height:76px}
+.mini-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.mini-h span{font-size:11.5px;font-weight:600;letter-spacing:.05em;color:var(--tx3)}
+.mini-h button{
+  border:0;background:none;cursor:pointer;font:inherit;font-size:12px;font-weight:600;
+  color:var(--ca,var(--a));padding:2px 4px;border-radius:6px;transition:.15s
+}
+.mini-h button:hover{background:rgba(255,255,255,.07)}
+.row{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:13.5px}
+.row .rk{
+  flex:none;width:21px;height:21px;border-radius:7px;display:grid;place-items:center;
+  font-size:11px;font-weight:700;background:rgba(255,255,255,.07);color:var(--tx2)
+}
+.row:nth-child(1) .rk{background:linear-gradient(135deg,#ffd561,#f0a020);color:#3a2400}
+.row:nth-child(2) .rk{background:linear-gradient(135deg,#e2e8f6,#a8b2cc);color:#2c3140}
+.row:nth-child(3) .rk{background:linear-gradient(135deg,#e2a06a,#b9713c);color:#2e1a08}
+.row .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.row .sc{flex:none;font-weight:700;font-variant-numeric:tabular-nums;color:#c8d2ff}
+.empty{font-size:13px;color:var(--tx3);padding:8px 0}
+.sk{height:13px;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.11),rgba(255,255,255,.05));background-size:200% 100%;animation:sh 1.4s infinite;margin:9px 0}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.play{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  margin-top:16px;height:46px;border-radius:14px;text-decoration:none;
+  font-size:15px;font-weight:600;color:#fff;
+  background:linear-gradient(135deg,var(--ca,var(--a)),var(--cb,var(--b)));
+  box-shadow:0 10px 24px -12px var(--ca,var(--a));transition:.16s
+}
+.play:hover{filter:brightness(1.1);transform:translateY(-1px)}
+
+/* soon card */
+.soon{
+  border:1px dashed rgba(255,255,255,.14);background:transparent;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:8px;min-height:230px;color:var(--tx3)
+}
+.soon::before,.soon::after{display:none}
+.soon:hover{transform:none;background:rgba(255,255,255,.02)}
+.soon .big{font-size:32px;opacity:.5}
+.soon b{font-size:15px;font-weight:600;color:var(--tx2)}
+.soon small{font-size:12.5px;max-width:24ch;line-height:1.5}
+
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;justify-content:space-between;
+  font-size:13px;color:var(--tx3)}
+footer a{color:var(--tx2);text-decoration:none;border-bottom:1px solid transparent;transition:.15s}
+footer a:hover{color:var(--tx);border-bottom-color:var(--line)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<!-- arcaide-pwa: installable to the home screen -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<meta name="theme-color" content="#0b0d1c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ArcAIde">
+</head>
+<body>
+<div class="shell">
+
+  <header>
+    <div class="eyebrow"><i></i> טבלאות שיאים גלובליות · חינם · בלי התקנה</div>
+    <h1>Arc<span class="ai">AI</span>de</h1>
+    <p class="sub">הארקייד של גיל</p>
+    <p class="lede">אוסף משחקי דפדפן קטנים שנבנו כאן, אחד־אחד. <b>כל משחק שומר טבלת שיאים כללית</b> — שוברים שיא, כותבים שם, ונשארים על הלוח.</p>
+  </header>
+
+  <h2 class="sec-title">המשחקים</h2>
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    <span>נבנה על ידי <a href="https://github.com/gilmagnum">gilmagnum</a> · קוד פתוח ב־<a href="https://github.com/gilmagnum/games">GitHub</a></span>
+    <span id="stat"></span>
+  </footer>
+
+</div>
+
+<script src="./config.js"></script>
+<script src="./leaderboard.js"></script>
+<script>
+(function(){
+  var grid = document.getElementById('grid');
+  var CFG  = window.GAMES_LB_CONFIG || {};
+  var games = [];
+
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+  function num(n){return Number(n).toLocaleString('he-IL');}
+
+  function card(g){
+    var el = document.createElement('article');
+    el.className = 'card';
+    el.style.setProperty('--ca', g.accent  || '#7c9dff');
+    el.style.setProperty('--cb', g.accent2 || g.accent || '#b06bff');
+    el.innerHTML =
+      '<div class="card-head">' +
+        '<div class="ic">' + esc(g.emoji || '🎮') + '</div>' +
+        '<div><h3>' + esc(g.title) + '</h3><p>' + esc(g.subtitle || '') + '</p>' +
+        (g.tags && g.tags.length
+          ? '<div class="tags">' + g.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join('') + '</div>'
+          : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="mini" data-slug="' + esc(g.slug) + '">' +
+        '<div class="mini-h"><span>מובילים</span><button type="button">טבלה מלאה ←</button></div>' +
+        '<div class="body"><div class="sk" style="width:80%"></div><div class="sk" style="width:65%"></div><div class="sk" style="width:72%"></div></div>' +
+      '</div>' +
+      '<a class="play" href="' + esc(g.url) + '">שחק עכשיו ←</a>';
+
+    el.querySelector('.mini-h button').addEventListener('click', function(){
+      if (!window.Leaderboard) return;
+      Leaderboard.init({
+        game: g.slug, title: g.title,
+        scoreLabel: g.scoreLabel || 'נקודות',
+        scoreOrder: g.scoreOrder || 'desc',
+        variants: g.variants || null,
+        hubUrl: location.href.split('#')[0]
+      });
+      Leaderboard.show();
+    });
+    return el;
+  }
+
+  function soonCard(){
+    var el = document.createElement('article');
+    el.className = 'card soon';
+    el.innerHTML = '<div class="big">✦</div><b>עוד משחק בדרך</b>' +
+      '<small>כל משחק חדש שנבנה מתווסף לכאן אוטומטית — עם טבלת שיאים משלו.</small>';
+    return el;
+  }
+
+  function renderScores(map){
+    document.querySelectorAll('.mini').forEach(function(m){
+      var rows = map[m.dataset.slug] || [];
+      var body = m.querySelector('.body');
+      if(!rows.length){ body.innerHTML = '<div class="empty">אין עדיין שיאים — הלוח פתוח 🚀</div>'; return; }
+      body.innerHTML = rows.slice(0,3).map(function(r){
+        return '<div class="row"><span class="rk">'+r.rank+'</span>' +
+               '<span class="nm">'+esc(r.player)+'</span>' +
+               '<span class="sc">'+num(r.score)+'</span></div>';
+      }).join('');
+    });
+  }
+
+  function loadScores(){
+    if(!CFG.supabaseUrl || CFG.supabaseUrl.indexOf('REPLACE_ME')>-1){
+      renderScores({}); document.getElementById('stat').textContent=''; return;
+    }
+    fetch(CFG.supabaseUrl.replace(/\/+$/,'')+'/rest/v1/rpc/hub_leaderboards',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':CFG.supabaseKey,'Authorization':'Bearer '+CFG.supabaseKey},
+      body:JSON.stringify({p_per_game:3})
+    })
+    .then(function(r){return r.json();})
+    .then(function(rows){
+      var map={}, total=0;
+      (rows||[]).forEach(function(r){ (map[r.game_slug]=map[r.game_slug]||[]).push(r); total++; });
+      renderScores(map);
+    })
+    .catch(function(){ renderScores({}); });
+  }
+
+  fetch('./games.json',{cache:'no-cache'})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      games = (data.games||[]).filter(function(g){return g.active !== false;});
+      games.forEach(function(g){ grid.appendChild(card(g)); });
+      grid.appendChild(soonCard());
+      document.getElementById('stat').textContent =
+        games.length + (games.length===1 ? ' משחק על הלוח' : ' משחקים על הלוח');
+      loadScores();
+    })
+    .catch(function(){
+      grid.innerHTML = '<div class="empty">לא הצלחנו לטעון את רשימת המשחקים.</div>';
+    });
+})();
+</script>
+</body>
+</html>

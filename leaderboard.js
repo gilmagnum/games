@@ -1,11 +1,11 @@
 /* =============================================================================
-   ArcAIde — Global Leaderboard (shared, dependency-free)
-   https://gilmagnum.github.io/games/leaderboard.js
+   Mini-Games Hub — Global Leaderboard (shared, dependency-free)
+   https://gilmagnum.github.io/games/lib/leaderboard.js
 
    USAGE inside a game
    -------------------
-   <script src="https://gilmagnum.github.io/games/config.js"></script>
-   <script src="https://gilmagnum.github.io/games/leaderboard.js"></script>
+   <script src="https://gilmagnum.github.io/games/lib/config.js"></script>
+   <script src="https://gilmagnum.github.io/games/lib/leaderboard.js"></script>
 
    <script>
      Leaderboard.init({

@@ -1,7 +1,7 @@
 -- =============================================================
---  Game registry seed / upsert
+--  ArcAIde — game registry seed / upsert
 --  Run after schema.sql. Re-runnable — adding a new game means
---  adding one row here and one object in ../games.json.
+--  adding one row here and one object in ./games.json.
 --
 --  score_order: 'desc' = higher is better, 'asc' = lower is better.
 --  max_score   : anything above this is rejected by submit_score().
@@ -16,6 +16,13 @@ values
    '🟪',
    'https://gilmagnum.github.io/area-conquer/',
    'נקודות', 'desc', 10000000, 10),
+
+  ('penalty-king',
+   'מלך הפנדלים',
+   '30 שניות מול השוער — כוונו, בעטו, ואספו בונוסים',
+   '⚽',
+   'https://gilmagnum.github.io/Penalty-King/',
+   'נקודות', 'desc', 100000, 15),
 
   ('catchit-easy',
    'תפוס''תו! · קל',

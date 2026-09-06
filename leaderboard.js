@@ -90,6 +90,15 @@
     return cfg.scoreOrder === 'asc' ? a < b : a > b;
   }
 
+  // this player's own row on the board (the board keeps one row per player)
+  function myRow(rows, name) {
+    if (!name) return null;
+    for (var i = 0; i < rows.length; i++) {
+      if (String(rows[i].player) === String(name)) return rows[i];
+    }
+    return null;
+  }
+
   /* ------------------------------------------------------------------ api */
 
   function rpc(fn, body) {
@@ -296,12 +305,13 @@
     });
   }
 
-  function nameForm(score, meta, rows) {
+  function nameForm(score, meta, rows, improving) {
     var prev = ls(LS_NAME) || '';
     render(
       header(cfg.title) +
-      '<div class="banner"><b>שיא חדש! ' + fmt(score) + ' ' + esc(cfg.scoreLabel) + '</b>' +
-      '<span>נכנסת לטבלת השיאים — איך קוראים לך?</span></div>' +
+      '<div class="banner"><b>' + (improving ? 'שיפרת את השיא שלך! ' : 'שיא חדש! ') +
+      fmt(score) + ' ' + esc(cfg.scoreLabel) + '</b>' +
+      '<span>' + (improving ? 'מאשרים את השם והשיא מתעדכן' : 'נכנסת לטבלת השיאים — איך קוראים לך?') + '</span></div>' +
       '<div class="f"><input maxlength="16" placeholder="השם שלך" value="' + esc(prev) + '">' +
       '<button class="go">שמירה</button></div>' +
       listHtml(rows) + footHtml()
@@ -357,14 +367,25 @@
 
     return fetchTop().then(function (rows) {
       rows = rows || [];
-      var qualifies = rows.length < cfg.limit ||
+      var myName = ls(LS_NAME);
+      var mine = myName ? myRow(rows, myName) : null;
+
+      // the board keeps one row per player, so a run only changes anything
+      // if it both reaches the list and beats this player's own entry
+      var entersList = rows.length < cfg.limit ||
         better(score, Number(rows[rows.length - 1].score));
-      if (qualifies && score > 0) nameForm(score, meta, rows);
-      else render(
+      var beatsMine = !mine || better(score, Number(mine.score));
+
+      if (score > 0 && entersList && beatsMine) { nameForm(score, meta, rows, !!mine); return; }
+
+      var note = mine
+        ? 'השיא שלך בטבלה: ' + fmt(mine.score) + ' ' + esc(cfg.scoreLabel) + ' — צריך לעבור אותו כדי לעדכן'
+        : 'עוד קצת והשיא שלך נכנס לטבלה';
+      render(
         header(cfg.title) +
         '<div class="banner calm"><b>' + fmt(score) + ' ' + esc(cfg.scoreLabel) + '</b>' +
-        '<span>עוד קצת והשיא שלך נכנס לטבלה</span></div>' +
-        listHtml(rows, ls(LS_NAME)) + footHtml()
+        '<span>' + note + '</span></div>' +
+        listHtml(rows, myName) + footHtml()
       );
     }).catch(function () {
       render(
@@ -389,9 +410,162 @@
     return API;
   }
 
+
+  /* ===========================================================================
+     arcAId control bar — one consistent cluster of controls in every game.
+     A game opts in with whatever it can actually do:
+
+       Arcade.controls({
+         onPause:  () => pauseTheGame(),     // omit -> the pause button is hidden
+         onResume: () => resumeTheGame(),
+         onRestart:() => startNewRound(),    // omit -> the restart button is hidden
+         onMute:   (muted) => setMuted(muted),
+         muted:    false,
+         theme:    true                      // omit/false -> no light-dark toggle
+       });
+
+     Mute and theme persist per browser and are shared by every game on the site.
+     The theme sets data-arcade-theme="light|dark" on <html>; each game styles
+     itself from that. Arcade.theme() reads it, Arcade.onTheme(fn) subscribes.
+     =========================================================================== */
+
+  var LS_THEME = 'gmh:theme';
+  var LS_MUTED = 'gmh:muted';
+
+  var bar = { host: null, root: null, cfg: null, paused: false, open: false, themeSubs: [] };
+
+  var BAR_CSS = [
+    /* arcade-collapsible: a single handle that opens into the cluster, so it
+       never sits on top of a game's own HUD for more than a moment. */
+    ':host{all:initial}',
+    '*{box-sizing:border-box;margin:0;padding:0;direction:ltr;',
+    'font-family:"Rubik","Assistant",system-ui,-apple-system,"Segoe UI",Arial,sans-serif}',
+    '.wrap{position:fixed;top:max(8px,env(safe-area-inset-top));left:max(8px,env(safe-area-inset-left));',
+    'z-index:2147482000;display:flex;align-items:center;gap:3px;padding:4px;border-radius:16px;',
+    'background:rgba(12,16,32,.55);border:1px solid rgba(255,255,255,.10);',
+    'backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);',
+    'transition:background .2s ease,border-color .2s ease,box-shadow .2s ease}',
+    '.wrap.open{background:rgba(12,16,32,.86);border-color:rgba(255,255,255,.16);box-shadow:0 8px 24px rgba(0,0,0,.4)}',
+    '.wrap.light{background:rgba(255,255,255,.62);border-color:rgba(0,0,0,.08)}',
+    '.wrap.light.open{background:rgba(255,255,255,.94);border-color:rgba(0,0,0,.12);box-shadow:0 8px 24px rgba(31,43,61,.18)}',
+    'button,a{width:32px;height:32px;flex:none;display:grid;place-items:center;border:0;border-radius:10px;',
+    'cursor:pointer;background:transparent;color:#e7ebff;font-size:15px;line-height:1;text-decoration:none;',
+    'transition:background .14s ease,transform .1s ease;-webkit-tap-highlight-color:transparent}',
+    '.wrap.light button,.wrap.light a{color:#26314a}',
+    'button:hover,a:hover{background:rgba(255,255,255,.14)}',
+    '.wrap.light button:hover,.wrap.light a:hover{background:rgba(0,0,0,.07)}',
+    'button:active,a:active{transform:scale(.9)}',
+    '.handle{opacity:.75}',
+    '.wrap.open .handle{opacity:1;background:rgba(255,255,255,.12)}',
+    '.wrap.light.open .handle{background:rgba(0,0,0,.08)}',
+    /* the cluster itself collapses to zero width when closed */
+    '.items{display:flex;align-items:center;gap:3px;overflow:hidden;max-width:0;opacity:0;',
+    'transition:max-width .26s cubic-bezier(.2,.9,.3,1),opacity .18s ease}',
+    '.wrap.open .items{max-width:280px;opacity:1}',
+    '.sep{width:1px;height:18px;flex:none;background:rgba(255,255,255,.14);margin:0 1px}',
+    '.wrap.light .sep{background:rgba(0,0,0,.12)}',
+    '@media (prefers-reduced-motion:reduce){.items{transition:none}button,a{transition:none}}'
+  ].join('');
+
+  function readTheme() {
+    var t = ls(LS_THEME);
+    return t === 'light' || t === 'dark' ? t : 'dark';
+  }
+
+  function applyTheme(t) {
+    try { document.documentElement.setAttribute('data-arcade-theme', t); } catch (e) {}
+    ls(LS_THEME, t);
+    if (bar.root) {
+      var el = bar.root.querySelector('.wrap');
+      if (el) el.classList.toggle('light', t === 'light');
+      var b = bar.root.querySelector('[data-act="theme"]');
+      if (b) { b.textContent = t === 'light' ? '☀️' : '🌙'; b.title = t === 'light' ? 'מצב כהה' : 'מצב בהיר'; }
+    }
+    bar.themeSubs.forEach(function (fn) { try { fn(t); } catch (e) {} });
+  }
+
+  function readMuted() { return ls(LS_MUTED) === '1'; }
+
+  function renderBar() {
+    var c = bar.cfg, t = readTheme(), html = '';
+    function btn(act, icon, title) {
+      return '<button data-act="' + act + '" title="' + esc(title) + '" aria-label="' + esc(title) + '">' + icon + '</button>';
+    }
+    if (c.onPause) html += btn('pause', bar.paused ? '▶️' : '⏸️', bar.paused ? 'המשך' : 'עצירה');
+    if (c.onRestart) html += btn('restart', '🔄', 'התחלה מחדש');
+    if (c.onMute) html += btn('mute', readMuted() ? '🔇' : '🔊', readMuted() ? 'הפעלת צליל' : 'השתקה');
+    if (html) html += '<span class="sep"></span>';
+    if (c.scores !== false) html += btn('scores', '🏆', 'טבלת שיאים');
+    if (c.theme) html += btn('theme', t === 'light' ? '☀️' : '🌙', t === 'light' ? 'מצב כהה' : 'מצב בהיר');
+    if (c.hub !== false) html += '<a href="' + esc(cfg.hubUrl) + '" title="כל המשחקים" aria-label="כל המשחקים">🏠</a>';
+
+    var wrap = bar.root.querySelector('.wrap');
+    wrap.innerHTML =
+      '<button class="handle" data-act="toggle" title="כפתורים" aria-label="כפתורים" aria-expanded="' +
+      (bar.open ? 'true' : 'false') + '">🕹️</button><div class="items">' + html + '</div>';
+    wrap.classList.toggle('light', t === 'light');
+    wrap.classList.toggle('open', !!bar.open);
+
+    function act(name) {
+      if (name === 'toggle') { bar.open = !bar.open; renderBar(); return; }
+      if (name === 'pause') {
+        bar.paused = !bar.paused;
+        try { (bar.paused ? c.onPause : (c.onResume || c.onPause))(); } catch (e) {}
+      } else if (name === 'restart') {
+        bar.paused = false;
+        try { c.onRestart(); } catch (e) {}
+      } else if (name === 'mute') {
+        var m = !readMuted();
+        ls(LS_MUTED, m ? '1' : '0');
+        try { c.onMute(m); } catch (e) {}
+      } else if (name === 'scores') {
+        show();
+      } else if (name === 'theme') {
+        applyTheme(readTheme() === 'light' ? 'dark' : 'light');
+      }
+      bar.open = false;          // acting on something closes the cluster again
+      renderBar();
+    }
+
+    Array.prototype.forEach.call(wrap.querySelectorAll('button'), function (b) {
+      b.onclick = function (e) { e.stopPropagation(); act(b.dataset.act); };
+    });
+  }
+
+  function controls(options) {
+    bar.cfg = options || {};
+    if (!bar.host) {
+      bar.host = document.createElement('div');
+      bar.host.setAttribute('data-arcade-bar', '');
+      bar.root = bar.host.attachShadow({ mode: 'open' });
+      var st = document.createElement('style');
+      st.textContent = BAR_CSS;
+      bar.root.appendChild(st);
+      var el = document.createElement('div');
+      el.className = 'wrap';
+      bar.root.appendChild(el);
+      document.body.appendChild(bar.host);
+      // clicking anywhere else puts the cluster away
+      document.addEventListener('pointerdown', function (ev) {
+        if (bar.open && ev.composedPath().indexOf(bar.host) === -1) { bar.open = false; renderBar(); }
+      }, true);
+    }
+    applyTheme(readTheme());
+    // hand the game the stored mute state so it starts in sync
+    if (bar.cfg.onMute) { try { bar.cfg.onMute(readMuted()); } catch (e) {} }
+    renderBar();
+    return API;
+  }
+
   var API = {
     init: init,
     show: show,
+    controls: controls,
+    theme: readTheme,
+    onTheme: function (fn) { bar.themeSubs.push(fn); try { fn(readTheme()); } catch (e) {} return API; },
+    setTheme: function (t) { applyTheme(t === 'light' ? 'light' : 'dark'); return API; },
+    muted: readMuted,
+    setPaused: function (v) { bar.paused = !!v; if (bar.root) renderBar(); return API; },
     gameOver: gameOver,
     submit: function (name, score, meta) { return submit(name, score, meta); },
     top: fetchTop,
@@ -407,4 +581,8 @@
   };
 
   window.Leaderboard = API;
+  window.Arcade = API;   // the controls half of the same runtime
+
+  // Apply the stored theme as early as possible, before the game paints.
+  try { document.documentElement.setAttribute('data-arcade-theme', readTheme()); } catch (e) {}
 })();

@@ -1,5 +1,5 @@
 /* ============================================================
-   ArcAIde — shared leaderboard configuration
+   arcAId — shared leaderboard configuration
    Loaded by every game BEFORE leaderboard.js.
 
    These are the *public* Supabase credentials for the "arcaide"

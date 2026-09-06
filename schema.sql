@@ -175,7 +175,8 @@ revoke all on function public.submit_score(text, text, bigint, jsonb, uuid) from
 grant execute on function public.submit_score(text, text, bigint, jsonb, uuid) to anon, authenticated;
 
 -- -------------------------------------------------------------
--- 6. top_scores() — best run per player, ordered per game rules
+-- 6. top_scores() — the leading runs, ordered per game rules
+--    Arcade style: a player can hold several places on the board.
 -- -------------------------------------------------------------
 create or replace function public.top_scores(
   p_game  text,
@@ -202,23 +203,14 @@ begin
   end if;
 
   return query
-  with best as (
-    select distinct on (s.player)
-           s.player, s.score, s.meta, s.created_at
-      from public.scores s
-     where s.game_slug = p_game
-     order by s.player,
-              case when v_order = 'asc' then s.score end asc nulls last,
-              case when v_order = 'desc' then s.score end desc nulls last,
-              s.created_at asc
-  )
   select row_number() over (
-           order by case when v_order = 'asc' then b.score end asc nulls last,
-                    case when v_order = 'desc' then b.score end desc nulls last,
-                    b.created_at asc
+           order by case when v_order = 'asc' then s.score end asc nulls last,
+                    case when v_order = 'desc' then s.score end desc nulls last,
+                    s.created_at asc
          ) as rnk,
-         b.player, b.score, b.meta, b.created_at
-    from best b
+         s.player, s.score, s.meta, s.created_at
+    from public.scores s
+   where s.game_slug = p_game
    order by rnk
    limit greatest(1, least(coalesce(p_limit, 10), 100));
 end;

@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ArcAIde · הארקייד של גיל</title>
-<meta name="description" content="אוסף משחקי דפדפן קטנים — עם טבלאות שיאים גלובליות. חינם, בלי התקנה, עובד גם בנייד.">
-<meta property="og:title" content="ArcAIde · הארקייד של גיל">
-<meta property="og:description" content="אוסף משחקי דפדפן קטנים עם טבלאות שיאים גלובליות.">
+<title>arcAId · משחקים קטנים, שיאים גדולים</title>
+<meta name="description" content="אוסף משחקי דפדפן קטנים שנבנו בכיף והנאה לצרכי לימוד ובידור בעזרת בינה מלאכותית — כל משחק עם טבלת שיאים כללית.">
+<meta property="og:title" content="arcAId · משחקים קטנים, שיאים גדולים">
+<meta property="og:description" content="אוסף משחקי דפדפן קטנים שנבנו בכיף והנאה לצרכי לימוד ובידור בעזרת בינה מלאכותית — כל משחק עם טבלת שיאים כללית.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%95%B9%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -116,6 +116,8 @@ h1{
 .row:nth-child(2) .rk{background:linear-gradient(135deg,#e2e8f6,#a8b2cc);color:#2c3140}
 .row:nth-child(3) .rk{background:linear-gradient(135deg,#e2a06a,#b9713c);color:#2e1a08}
 .row .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.row .vl{flex:none;width:21px;text-align:center;font-size:13px;line-height:1}
+.row .nm.dim{color:var(--tx3);font-weight:400}
 .row .sc{flex:none;font-weight:700;font-variant-numeric:tabular-nums;color:#c8d2ff}
 .empty{font-size:13px;color:var(--tx3);padding:8px 0}
 .sk{height:13px;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.11),rgba(255,255,255,.05));background-size:200% 100%;animation:sh 1.4s infinite;margin:9px 0}
@@ -149,6 +151,81 @@ footer a{color:var(--tx2);text-decoration:none;border-bottom:1px solid transpare
 footer a:hover{color:var(--tx);border-bottom-color:var(--line)}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== arcaide-theme: light mode ===== */
+html[data-arcade-theme="light"] {
+  --bg:#eef2fb; --bg2:#e2e9f7;
+  --card:rgba(255,255,255,.80); --card-h:rgba(255,255,255,.95);
+  --line:rgba(31,43,61,.12);
+  --tx:#1b2540; --tx2:#4d5b7d; --tx3:#7b87a6;
+}
+html[data-arcade-theme="light"] body::before{
+  background:
+    radial-gradient(1000px 620px at 88% -12%, rgba(124,157,255,.22), transparent 62%),
+    radial-gradient(820px 560px at 6% 4%, rgba(176,107,255,.16), transparent 60%),
+    radial-gradient(700px 500px at 50% 112%, rgba(255,138,76,.12), transparent 62%),
+    linear-gradient(180deg,#eef2fb,#e6ecf9 70%,#eef2fb);
+}
+html[data-arcade-theme="light"] h1{
+  background:linear-gradient(120deg,#1b2540 15%,#4b62c8 55%,#8a4fd0 92%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+html[data-arcade-theme="light"] .ai{background:linear-gradient(120deg,#4b62c8,#9a52d8);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-arcade-theme="light"] .sub{color:#3d4a6b}
+html[data-arcade-theme="light"] .tag{background:rgba(31,43,61,.07)}
+html[data-arcade-theme="light"] .row .rk{background:rgba(31,43,61,.08);color:var(--tx2)}
+html[data-arcade-theme="light"] .row .sc{color:#3a4a7a}
+html[data-arcade-theme="light"] .card{box-shadow:0 6px 20px -12px rgba(31,43,61,.35)}
+html[data-arcade-theme="light"] .sk{background:linear-gradient(90deg,rgba(31,43,61,.05),rgba(31,43,61,.11),rgba(31,43,61,.05));background-size:200% 100%}
+html[data-arcade-theme="light"] .soon{border-color:rgba(31,43,61,.18)}
+/* ===== arcaide-mobile-grid: two games per row, so several are visible at once ===== */
+@media (max-width: 760px){
+  .shell{padding:18px 12px 40px}
+  header{margin-bottom:16px}
+  .eyebrow{display:none}
+  h1{font-size:clamp(30px,10vw,40px);margin-bottom:4px}
+  .sub{font-size:15px;margin:0 0 6px}
+  .lede{font-size:13px;max-width:none}
+  .sec-title{margin-bottom:12px;font-size:11.5px}
+
+  /* minmax(0,...) + min-width:0 so a long name can't widen the whole track */
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .grid > *{min-width:0}
+  .card{padding:13px 11px 11px;border-radius:17px;min-width:0}
+  .mini-h span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mini-h button{flex:none}
+  .card::after{width:130px;height:130px;top:-45px;left:-45px}
+  .card-head{gap:9px;margin-bottom:9px}
+  .ic{width:38px;height:38px;border-radius:12px;font-size:19px}
+  .card h3{font-size:14.5px;margin-bottom:2px}
+  .card p{font-size:11px;line-height:1.4;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .tags{display:none}
+
+  .mini{margin-top:9px;padding-top:8px;min-height:0}
+  .mini-h{margin-bottom:5px}
+  .mini-h span{font-size:10px}
+  .mini-h button{font-size:10.5px;padding:1px 3px}
+  .row{font-size:11.5px;gap:6px;padding:2.5px 0}
+  .row .rk{width:17px;height:17px;border-radius:5px;font-size:9.5px}
+  .row .vl{font-size:12px}
+  .empty{font-size:11px;padding:5px 0;line-height:1.4}
+
+  .play{height:38px;font-size:13px;margin-top:9px;border-radius:11px}
+  .soon{min-height:0;padding:18px 10px;gap:5px}
+  .soon .big{font-size:24px}
+  .soon b{font-size:13px}
+  .soon small{font-size:11px}
+  footer{margin-top:32px;font-size:12px}
+}
+@media (max-width: 430px){
+  .mini-h span{display:none}          /* the medal / difficulty dot already says it */
+  .mini-h{justify-content:flex-start}
+}
+@media (max-width: 360px){
+  .card p{-webkit-line-clamp:2;font-size:10.5px}
+  .card h3{font-size:13.5px}
+}
 </style>
 <!-- arcaide-pwa: installable to the home screen -->
 <link rel="manifest" href="manifest.webmanifest">
@@ -159,23 +236,23 @@ footer a:hover{color:var(--tx);border-bottom-color:var(--line)}
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="ArcAIde">
+<meta name="apple-mobile-web-app-title" content="arcAId">
 </head>
 <body>
 <div class="shell">
 
   <header>
     <div class="eyebrow"><i></i> טבלאות שיאים גלובליות · חינם · בלי התקנה</div>
-    <h1>Arc<span class="ai">AI</span>de</h1>
-    <p class="sub">הארקייד של גיל</p>
-    <p class="lede">אוסף משחקי דפדפן קטנים שנבנו כאן, אחד־אחד. <b>כל משחק שומר טבלת שיאים כללית</b> — שוברים שיא, כותבים שם, ונשארים על הלוח.</p>
+    <h1>arc<span class="ai">AI</span>d</h1>
+    <p class="sub">משחקים קטנים, שיאים גדולים</p>
+    <p class="lede">אוסף משחקי דפדפן קטנים שנבנו בכיף והנאה לצרכי לימוד ובידור בעזרת בינה מלאכותית. <b>כל משחק שומר טבלת שיאים כללית</b> — שוברים שיא, כותבים שם, ונשארים על הלוח.</p>
   </header>
 
   <h2 class="sec-title">המשחקים</h2>
   <div class="grid" id="grid"></div>
 
   <footer>
-    <span>נבנה על ידי <a href="https://github.com/gilmagnum">gilmagnum</a> · קוד פתוח ב־<a href="https://github.com/gilmagnum/games">GitHub</a></span>
+    <span>קוד פתוח ב־<a href="https://github.com/gilmagnum/games">GitHub</a></span>
     <span id="stat"></span>
   </footer>
 
@@ -238,8 +315,25 @@ footer a:hover{color:var(--tx);border-bottom-color:var(--line)}
 
   function renderScores(map){
     document.querySelectorAll('.mini').forEach(function(m){
-      var rows = map[m.dataset.slug] || [];
+      var slug = m.dataset.slug;
+      var g = games.filter(function(x){ return x.slug === slug; })[0] || {};
       var body = m.querySelector('.body');
+
+      // A game split into difficulties shows the leader of each, not one board's top 3.
+      if (g.variants && g.variants.length){
+        m.querySelector('.mini-h span').textContent = 'מוביל בכל רמה';
+        body.innerHTML = g.variants.map(function(v){
+          var top = (map[v.slug] || [])[0];
+          return '<div class="row"><span class="vl">' + esc(v.label.split(' ')[0]) + '</span>' +
+                 (top
+                   ? '<span class="nm">' + esc(top.player) + '</span><span class="sc">' + num(top.score) + '</span>'
+                   : '<span class="nm dim">עוד אין</span><span class="sc">—</span>') +
+                 '</div>';
+        }).join('');
+        return;
+      }
+
+      var rows = map[slug] || [];
       if(!rows.length){ body.innerHTML = '<div class="empty">אין עדיין שיאים — הלוח פתוח 🚀</div>'; return; }
       body.innerHTML = rows.slice(0,3).map(function(r){
         return '<div class="row"><span class="rk">'+r.rank+'</span>' +
@@ -266,6 +360,9 @@ footer a:hover{color:var(--tx);border-bottom-color:var(--line)}
     })
     .catch(function(){ renderScores({}); });
   }
+
+  // the theme toggle lives in the same shared bar the games use
+  if (window.Arcade) Arcade.controls({ theme: true, scores: false, hub: false });
 
   fetch('./games.json',{cache:'no-cache'})
     .then(function(r){return r.json();})

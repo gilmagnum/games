@@ -2,6 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
+<script>/* arcAId theme: light by default, remembered per browser */try{var _t=localStorage.getItem("gmh:theme");document.documentElement.setAttribute("data-arcade-theme",_t==="dark"?"dark":"light");}catch(e){document.documentElement.setAttribute("data-arcade-theme","light");}</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>arcAId · משחקים קטנים, שיאים גדולים</title>
 <meta name="description" content="אוסף משחקי דפדפן קטנים שנבנו בכיף והנאה לצרכי לימוד ובידור בעזרת בינה מלאכותית — כל משחק עם טבלת שיאים כללית.">
@@ -55,7 +56,8 @@ h1{
   -webkit-background-clip:text;background-clip:text;color:transparent;
   margin-bottom:14px
 }
-.ai{background:linear-gradient(120deg,#8fa6ff,#d7a2ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* the AI in arcAId is a warm accent, clearly a different colour from the rest of the word */
+.ai{background:linear-gradient(120deg,#ffc23d,#ff7a45);-webkit-background-clip:text;background-clip:text;color:transparent}
 .sub{font-size:clamp(16px,3vw,21px);font-weight:500;color:#b9c1e6;margin:-6px 0 14px}
 .lede{font-size:clamp(15px,2.4vw,17.5px);color:var(--tx2);max-width:56ch}
 .lede b{color:var(--tx);font-weight:500}
@@ -170,7 +172,7 @@ html[data-arcade-theme="light"] h1{
   background:linear-gradient(120deg,#1b2540 15%,#4b62c8 55%,#8a4fd0 92%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
-html[data-arcade-theme="light"] .ai{background:linear-gradient(120deg,#4b62c8,#9a52d8);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-arcade-theme="light"] .ai{background:linear-gradient(120deg,#ef8a17,#e2553d);-webkit-background-clip:text;background-clip:text;color:transparent}
 html[data-arcade-theme="light"] .sub{color:#3d4a6b}
 html[data-arcade-theme="light"] .tag{background:rgba(31,43,61,.07)}
 html[data-arcade-theme="light"] .row .rk{background:rgba(31,43,61,.08);color:var(--tx2)}
@@ -242,7 +244,6 @@ html[data-arcade-theme="light"] .soon{border-color:rgba(31,43,61,.18)}
 <div class="shell">
 
   <header>
-    <div class="eyebrow"><i></i> טבלאות שיאים גלובליות · חינם · בלי התקנה</div>
     <h1>arc<span class="ai">AI</span>d</h1>
     <p class="sub">משחקים קטנים, שיאים גדולים</p>
     <p class="lede">אוסף משחקי דפדפן קטנים שנבנו בכיף והנאה לצרכי לימוד ובידור בעזרת בינה מלאכותית. <b>כל משחק שומר טבלת שיאים כללית</b> — שוברים שיא, כותבים שם, ונשארים על הלוח.</p>
@@ -362,7 +363,8 @@ html[data-arcade-theme="light"] .soon{border-color:rgba(31,43,61,.18)}
   }
 
   // the theme toggle lives in the same shared bar the games use
-  if (window.Arcade) Arcade.controls({ theme: true, scores: false, hub: false });
+  // the hub keeps the collapsible 🕹️ handle; the games use one open row at the bottom
+  if (window.Arcade) Arcade.controls({ theme: true, scores: false, hub: false, collapsible: true });
 
   fetch('./games.json',{cache:'no-cache'})
     .then(function(r){return r.json();})

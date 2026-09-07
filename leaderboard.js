@@ -370,16 +370,16 @@
       var myName = ls(LS_NAME);
       var mine = myName ? myRow(rows, myName) : null;
 
-      // the board keeps one row per player, so a run only changes anything
-      // if it both reaches the list and beats this player's own entry
+      // the board lists runs, not players: every run that reaches the list can be
+      // saved (a player may hold several places), and beating your own best is called out
       var entersList = rows.length < cfg.limit ||
         better(score, Number(rows[rows.length - 1].score));
-      var beatsMine = !mine || better(score, Number(mine.score));
+      var improving = !!(mine && better(score, Number(mine.score)));
 
-      if (score > 0 && entersList && beatsMine) { nameForm(score, meta, rows, !!mine); return; }
+      if (score > 0 && entersList) { nameForm(score, meta, rows, improving); return; }
 
       var note = mine
-        ? 'השיא שלך בטבלה: ' + fmt(mine.score) + ' ' + esc(cfg.scoreLabel) + ' — צריך לעבור אותו כדי לעדכן'
+        ? 'הכי טוב שלך בטבלה: ' + fmt(mine.score) + ' ' + esc(cfg.scoreLabel)
         : 'עוד קצת והשיא שלך נכנס לטבלה';
       render(
         header(cfg.title) +
@@ -464,12 +464,23 @@
     '.wrap.open .items{max-width:280px;opacity:1}',
     '.sep{width:1px;height:18px;flex:none;background:rgba(255,255,255,.14);margin:0 1px}',
     '.wrap.light .sep{background:rgba(0,0,0,.12)}',
+    /* games use the open form: one fixed row, centred at the bottom of the screen */
+    '.wrap.fixed-row{top:auto;left:50%;right:auto;transform:translateX(-50%);',
+    'bottom:max(8px,env(safe-area-inset-bottom));padding:5px 7px;gap:4px;',
+    'background:rgba(12,16,32,.82);border-color:rgba(255,255,255,.16);box-shadow:0 8px 24px rgba(0,0,0,.4)}',
+    '.wrap.fixed-row.light{background:rgba(255,255,255,.92);border-color:rgba(0,0,0,.12);box-shadow:0 8px 24px rgba(31,43,61,.18)}',
+    '.wrap.fixed-row .items{max-width:none;opacity:1;overflow:visible;transition:none}',
+    '@media (max-width:360px){.wrap.fixed-row button,.wrap.fixed-row a{width:30px;height:30px;font-size:14px}}',
+    /* on a short (landscape) screen the middle of the bottom edge is usually gameplay —
+       tuck the row into the corner instead of over the pitch */
+    '@media (max-height:520px){.wrap.fixed-row{left:max(8px,env(safe-area-inset-left));transform:none;',
+    'padding:3px 5px;gap:3px}.wrap.fixed-row button,.wrap.fixed-row a{width:28px;height:28px;font-size:13px}}',
     '@media (prefers-reduced-motion:reduce){.items{transition:none}button,a{transition:none}}'
   ].join('');
 
   function readTheme() {
     var t = ls(LS_THEME);
-    return t === 'light' || t === 'dark' ? t : 'dark';
+    return t === 'light' || t === 'dark' ? t : 'light';   // light is the default look
   }
 
   function applyTheme(t) {
@@ -499,12 +510,18 @@
     if (c.theme) html += btn('theme', t === 'light' ? '☀️' : '🌙', t === 'light' ? 'מצב כהה' : 'מצב בהיר');
     if (c.hub !== false) html += '<a href="' + esc(cfg.hubUrl) + '" title="כל המשחקים" aria-label="כל המשחקים">🏠</a>';
 
+    // collapsible:true -> the 🕹️ handle (used by the hub); otherwise one open row at the bottom
+    var collapsible = !!c.collapsible;
     var wrap = bar.root.querySelector('.wrap');
     wrap.innerHTML =
-      '<button class="handle" data-act="toggle" title="כפתורים" aria-label="כפתורים" aria-expanded="' +
-      (bar.open ? 'true' : 'false') + '">🕹️</button><div class="items">' + html + '</div>';
+      (collapsible
+        ? '<button class="handle" data-act="toggle" title="כפתורים" aria-label="כפתורים" aria-expanded="' +
+          (bar.open ? 'true' : 'false') + '">🕹️</button>'
+        : '') +
+      '<div class="items">' + html + '</div>';
     wrap.classList.toggle('light', t === 'light');
-    wrap.classList.toggle('open', !!bar.open);
+    wrap.classList.toggle('fixed-row', !collapsible);
+    wrap.classList.toggle('open', collapsible ? !!bar.open : true);
 
     function act(name) {
       if (name === 'toggle') { bar.open = !bar.open; renderBar(); return; }
@@ -523,7 +540,7 @@
       } else if (name === 'theme') {
         applyTheme(readTheme() === 'light' ? 'dark' : 'light');
       }
-      bar.open = false;          // acting on something closes the cluster again
+      if (collapsible) bar.open = false;   // acting on something closes the cluster again
       renderBar();
     }
 
@@ -545,9 +562,11 @@
       el.className = 'wrap';
       bar.root.appendChild(el);
       document.body.appendChild(bar.host);
-      // clicking anywhere else puts the cluster away
+      // clicking anywhere else puts the collapsible cluster away
       document.addEventListener('pointerdown', function (ev) {
-        if (bar.open && ev.composedPath().indexOf(bar.host) === -1) { bar.open = false; renderBar(); }
+        if (bar.cfg.collapsible && bar.open && ev.composedPath().indexOf(bar.host) === -1) {
+          bar.open = false; renderBar();
+        }
       }, true);
     }
     applyTheme(readTheme());

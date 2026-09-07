@@ -429,7 +429,7 @@
      itself from that. Arcade.theme() reads it, Arcade.onTheme(fn) subscribes.
      =========================================================================== */
 
-  var LS_THEME = 'gmh:theme';
+  var LS_THEME = 'gmh:theme2';   // v2: light is the default; only an explicit toggle is stored
   var LS_MUTED = 'gmh:muted';
 
   var bar = { host: null, root: null, cfg: null, paused: false, open: false, themeSubs: [] };
@@ -483,9 +483,9 @@
     return t === 'light' || t === 'dark' ? t : 'light';   // light is the default look
   }
 
-  function applyTheme(t) {
+  function applyTheme(t, persist) {
     try { document.documentElement.setAttribute('data-arcade-theme', t); } catch (e) {}
-    ls(LS_THEME, t);
+    if (persist) ls(LS_THEME, t);   // loading a page must not freeze the default in place
     if (bar.root) {
       var el = bar.root.querySelector('.wrap');
       if (el) el.classList.toggle('light', t === 'light');
@@ -538,7 +538,7 @@
       } else if (name === 'scores') {
         show();
       } else if (name === 'theme') {
-        applyTheme(readTheme() === 'light' ? 'dark' : 'light');
+        applyTheme(readTheme() === 'light' ? 'dark' : 'light', true);
       }
       if (collapsible) bar.open = false;   // acting on something closes the cluster again
       renderBar();
@@ -582,7 +582,7 @@
     controls: controls,
     theme: readTheme,
     onTheme: function (fn) { bar.themeSubs.push(fn); try { fn(readTheme()); } catch (e) {} return API; },
-    setTheme: function (t) { applyTheme(t === 'light' ? 'light' : 'dark'); return API; },
+    setTheme: function (t) { applyTheme(t === 'light' ? 'light' : 'dark', true); return API; },
     muted: readMuted,
     setPaused: function (v) { bar.paused = !!v; if (bar.root) renderBar(); return API; },
     gameOver: gameOver,

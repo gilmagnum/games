@@ -497,6 +497,36 @@
 
   function readMuted() { return ls(LS_MUTED) === '1'; }
 
+  // share sheet on phones, copy-to-clipboard everywhere else
+  function shareLink() {
+    var url = location.href;
+    var data = {
+      title: document.title || 'arcAId',
+      text: 'arcAId — משחקים קטנים, שיאים גדולים',
+      url: url
+    };
+    function mark(icon, title) {
+      if (!bar.root) return;
+      var b = bar.root.querySelector('[data-act="share"]');
+      if (!b) return;
+      b.textContent = icon;
+      b.title = title;
+      setTimeout(function () {
+        var b2 = bar.root && bar.root.querySelector('[data-act="share"]');
+        if (b2) { b2.textContent = '📤'; b2.title = 'שיתוף'; }
+      }, 1600);
+    }
+    try {
+      if (navigator.share) { navigator.share(data).catch(function () {}); return; }
+    } catch (e) {}
+    try {
+      navigator.clipboard.writeText(url).then(
+        function () { mark('✅', 'הקישור הועתק'); },
+        function () { mark('❌', 'ההעתקה נחסמה'); }
+      );
+    } catch (e) { mark('❌', 'ההעתקה נחסמה'); }
+  }
+
   function renderBar() {
     var c = bar.cfg, t = readTheme(), html = '';
     function btn(act, icon, title) {
@@ -508,6 +538,7 @@
     if (html) html += '<span class="sep"></span>';
     if (c.scores !== false) html += btn('scores', '🏆', 'טבלת שיאים');
     if (c.theme) html += btn('theme', t === 'light' ? '☀️' : '🌙', t === 'light' ? 'מצב כהה' : 'מצב בהיר');
+    if (c.share) html += btn('share', '📤', 'שיתוף');
     if (c.hub !== false) html += '<a href="' + esc(cfg.hubUrl) + '" title="כל המשחקים" aria-label="כל המשחקים">🏠</a>';
 
     // collapsible:true -> the 🕹️ handle (used by the hub); otherwise one open row at the bottom
@@ -539,6 +570,9 @@
         show();
       } else if (name === 'theme') {
         applyTheme(readTheme() === 'light' ? 'dark' : 'light', true);
+      } else if (name === 'share') {
+        shareLink();
+        return;                            // keep the cluster open so the ✓ is visible
       }
       if (collapsible) bar.open = false;   // acting on something closes the cluster again
       renderBar();

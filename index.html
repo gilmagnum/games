@@ -364,7 +364,7 @@ html[data-arcade-theme="light"] .soon{border-color:rgba(31,43,61,.18)}
 
   // the theme toggle lives in the same shared bar the games use
   // the hub keeps the collapsible 🕹️ handle; the games use one open row at the bottom
-  if (window.Arcade) Arcade.controls({ theme: true, scores: false, hub: false, collapsible: true });
+  if (window.Arcade) Arcade.controls({ theme: true, share: true, scores: false, hub: false, collapsible: true });
 
   fetch('./games.json',{cache:'no-cache'})
     .then(function(r){return r.json();})

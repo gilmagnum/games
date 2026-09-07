@@ -469,7 +469,8 @@
     'bottom:max(8px,env(safe-area-inset-bottom));padding:5px 7px;gap:4px;',
     'background:rgba(12,16,32,.82);border-color:rgba(255,255,255,.16);box-shadow:0 8px 24px rgba(0,0,0,.4)}',
     '.wrap.fixed-row.light{background:rgba(255,255,255,.92);border-color:rgba(0,0,0,.12);box-shadow:0 8px 24px rgba(31,43,61,.18)}',
-    '.wrap.fixed-row .items{max-width:none;opacity:1;overflow:visible;transition:none}',
+    '.wrap.no-handle .items{max-width:none;opacity:1;overflow:visible;transition:none}',
+    '.wrap.no-handle{padding:5px 7px;gap:4px}',
     '@media (max-width:360px){.wrap.fixed-row button,.wrap.fixed-row a{width:30px;height:30px;font-size:14px}}',
     /* on a short (landscape) screen the middle of the bottom edge is usually gameplay —
        tuck the row into the corner instead of over the pitch */
@@ -495,6 +496,13 @@
     bar.themeSubs.forEach(function (fn) { try { fn(t); } catch (e) {} });
   }
 
+  var SHARE_SVG = '<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">' +
+    '<circle cx="18" cy="5.2" r="3.1" fill="currentColor"/>' +
+    '<circle cx="5.6" cy="12" r="3.1" fill="currentColor"/>' +
+    '<circle cx="18" cy="18.8" r="3.1" fill="currentColor"/>' +
+    '<path d="M8.4 10.5 15.2 6.8M8.4 13.5 15.2 17.2" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" fill="none"/>' +
+    '</svg>';
+
   function readMuted() { return ls(LS_MUTED) === '1'; }
 
   // share sheet on phones, copy-to-clipboard everywhere else
@@ -509,11 +517,11 @@
       if (!bar.root) return;
       var b = bar.root.querySelector('[data-act="share"]');
       if (!b) return;
-      b.textContent = icon;
+      b.innerHTML = icon;
       b.title = title;
       setTimeout(function () {
         var b2 = bar.root && bar.root.querySelector('[data-act="share"]');
-        if (b2) { b2.textContent = '📤'; b2.title = 'שיתוף'; }
+        if (b2) { b2.innerHTML = SHARE_SVG; b2.title = 'שיתוף'; }
       }, 1600);
     }
     try {
@@ -538,11 +546,13 @@
     if (html) html += '<span class="sep"></span>';
     if (c.scores !== false) html += btn('scores', '🏆', 'טבלת שיאים');
     if (c.theme) html += btn('theme', t === 'light' ? '☀️' : '🌙', t === 'light' ? 'מצב כהה' : 'מצב בהיר');
-    if (c.share) html += btn('share', '📤', 'שיתוף');
+    if (c.share) html += btn('share', SHARE_SVG, 'שיתוף');
     if (c.hub !== false) html += '<a href="' + esc(cfg.hubUrl) + '" title="כל המשחקים" aria-label="כל המשחקים">🏠</a>';
 
-    // collapsible:true -> the 🕹️ handle (used by the hub); otherwise one open row at the bottom
+    // collapsible -> the 🕹️ handle; corner -> an open cluster where it already sits;
+    // otherwise one open row fixed at the bottom (the games)
     var collapsible = !!c.collapsible;
+    var corner = !collapsible && c.corner === true;
     var wrap = bar.root.querySelector('.wrap');
     wrap.innerHTML =
       (collapsible
@@ -551,7 +561,8 @@
         : '') +
       '<div class="items">' + html + '</div>';
     wrap.classList.toggle('light', t === 'light');
-    wrap.classList.toggle('fixed-row', !collapsible);
+    wrap.classList.toggle('no-handle', !collapsible);
+    wrap.classList.toggle('fixed-row', !collapsible && !corner);
     wrap.classList.toggle('open', collapsible ? !!bar.open : true);
 
     function act(name) {

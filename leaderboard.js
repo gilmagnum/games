@@ -396,6 +396,29 @@
     });
   }
 
+  /* ------------------------------------------------- scheduled game over */
+
+  var pendingOver = null;
+
+  /**
+   * Open the end-of-run panel after `delay` ms.
+   * Games use this instead of their own setTimeout so that starting a new
+   * round cancels it — otherwise the panel lands on top of the new game.
+   */
+  function gameOverIn(delay, score, meta) {
+    cancelPending();
+    pendingOver = setTimeout(function () {
+      pendingOver = null;
+      gameOver(score, meta);
+    }, Math.max(0, Number(delay) || 0));
+  }
+
+  /** Drop a scheduled panel, and close it if it is already showing. */
+  function cancelPending(alsoClose) {
+    if (pendingOver) { clearTimeout(pendingOver); pendingOver = null; }
+    if (alsoClose !== false) close();
+  }
+
   /* ----------------------------------------------------------------- init */
 
   function init(options) {
@@ -572,6 +595,7 @@
         try { (bar.paused ? c.onPause : (c.onResume || c.onPause))(); } catch (e) {}
       } else if (name === 'restart') {
         bar.paused = false;
+        cancelPending();                   // never let the old run's panel land on the new one
         try { c.onRestart(); } catch (e) {}
       } else if (name === 'mute') {
         var m = !readMuted();
@@ -634,6 +658,8 @@
     submit: function (name, score, meta) { return submit(name, score, meta); },
     top: fetchTop,
     close: close,
+    gameOverIn: function (delay, score, meta) { gameOverIn(delay, score, meta); return API; },
+    cancelPending: function () { cancelPending(); return API; },
     personalBest: function () {
       var v = ls(LS_BEST + cfg.game);
       return v === null ? null : Number(v);

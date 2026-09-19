@@ -10,6 +10,13 @@
 insert into public.games
   (slug, title, subtitle, emoji, url, score_label, score_order, max_score, sort_order)
 values
+  ('hoops',
+   'סל הרחוב',
+   'מושכים לכיוון הסל — שלוש קליעות ברצף ומצב אש',
+   '🏀',
+   'https://gilmagnum.github.io/Hoops/',
+   'נקודות', 'desc', 100000, 5),
+
   ('area-conquer',
    'סוגר שטחים',
    'כבשו 75% מהלוח בלי שהכדורים יפגעו בקו',

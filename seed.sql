@@ -71,7 +71,8 @@ values
    '30 שניות מול השוער — כוונו, בעטו, ואספו בונוסים',
    '⚽',
    'https://gilmagnum.github.io/Penalty-King/',
-   'נקודות', 'desc', 1000000, 20),
+   -- the frenzy stacks x2 bonuses, so a strong round clears a million; keep the ceiling well clear
+   'נקודות', 'desc', 10000000, 20),
 
   ('brick-breaker',
    'שובר לבנים',

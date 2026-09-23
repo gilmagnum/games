@@ -5,6 +5,9 @@
 --
 --  score_order: 'desc' = higher is better, 'asc' = lower is better.
 --  max_score   : anything above this is rejected by submit_score().
+--                Floor of 1,000,000 for every points-based game so a
+--                strong round is never thrown away; raise it further
+--                when a game's bonuses can multiply past that.
 -- =============================================================
 
 insert into public.games
@@ -15,7 +18,7 @@ values
    'מושכים לכיוון הסל — שלוש קליעות ברצף ומצב אש',
    '🏀',
    'https://gilmagnum.github.io/Hoops/',
-   'נקודות', 'desc', 100000, 5),
+   'נקודות', 'desc', 1000000, 5),
 
   ('area-conquer',
    'סוגר שטחים',
@@ -29,21 +32,21 @@ values
    '40 שניות לתפוס כמה שיותר',
    '🟢',
    'https://gilmagnum.github.io/catchit-/',
-   'נקודות', 'desc', 100000, 70),
+   'נקודות', 'desc', 1000000, 70),
 
   ('catchit-normal',
    'תפוס''תו! · רגיל',
    '30 שניות לתפוס כמה שיותר',
    '🟡',
    'https://gilmagnum.github.io/catchit-/',
-   'נקודות', 'desc', 100000, 71),
+   'נקודות', 'desc', 1000000, 71),
 
   ('catchit-hard',
    'תפוס''תו! · קשה',
    '20 שניות, יותר קופים ופחות מטרות',
    '🔴',
    'https://gilmagnum.github.io/catchit-/',
-   'נקודות', 'desc', 100000, 72),
+   'נקודות', 'desc', 1000000, 72),
 
   ('snake-memory',
    'שביל הנחש',
@@ -64,6 +67,7 @@ values
    'למצוא את 4 האסים בכמה שפחות קלפים',
    '🃏',
    'https://gilmagnum.github.io/Find-the-Ace/',
+   -- cards drawn, lower is better: 52 is the whole deck, so it IS the ceiling
    'קלפים', 'asc', 52, 60),
 
   ('penalty-king',

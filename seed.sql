@@ -27,10 +27,11 @@ values
    'https://gilmagnum.github.io/area-conquer/',
    'נקודות', 'desc', 10000000, 40),
 
-  ('catchit-easy',
-   'תפוס''תו! · קל',
-   '40 שניות לתפוס כמה שיותר',
-   '🟢',
+  -- hardest first, matching the order the hub shows these three in
+  ('catchit-hard',
+   'תפוס''תו! · קשה',
+   '20 שניות, יותר קופים ופחות מטרות',
+   '🔴',
    'https://gilmagnum.github.io/catchit-/',
    'נקודות', 'desc', 1000000, 70),
 
@@ -41,10 +42,10 @@ values
    'https://gilmagnum.github.io/catchit-/',
    'נקודות', 'desc', 1000000, 71),
 
-  ('catchit-hard',
-   'תפוס''תו! · קשה',
-   '20 שניות, יותר קופים ופחות מטרות',
-   '🔴',
+  ('catchit-easy',
+   'תפוס''תו! · קל',
+   '40 שניות לתפוס כמה שיותר',
+   '🟢',
    'https://gilmagnum.github.io/catchit-/',
    'נקודות', 'desc', 1000000, 72),
 

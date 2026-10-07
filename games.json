@@ -107,9 +107,9 @@
       ]
     },
     {
-      "slug": "catchit-normal",
+      "slug": "catchit-hard",
       "title": "תפוס'תו!",
-      "subtitle": "30 שניות לתפוס כמה שיותר — ולהיזהר מהקופים",
+      "subtitle": "שלוש רמות — לתפוס כמה שיותר ולהיזהר מהקופים",
       "emoji": "🐒",
       "url": "https://gilmagnum.github.io/catchit-/",
       "scoreLabel": "נקודות",
@@ -122,16 +122,16 @@
       ],
       "variants": [
         {
-          "slug": "catchit-easy",
-          "label": "🟢 קל"
+          "slug": "catchit-hard",
+          "label": "🔴 קשה"
         },
         {
           "slug": "catchit-normal",
           "label": "🟡 רגיל"
         },
         {
-          "slug": "catchit-hard",
-          "label": "🔴 קשה"
+          "slug": "catchit-easy",
+          "label": "🟢 קל"
         }
       ]
     }
